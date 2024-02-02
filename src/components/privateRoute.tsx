@@ -1,17 +1,25 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { getUser } from '../util';
 import Cookies from 'js-cookie';
+import { getUser } from '../util';
 
-
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-    const retrieveUser = getUser()
+const PrivateRoute = () => {
     const token = Cookies.get('Authorization')
-  return  retrieveUser!=null && retrieveUser.isLoggedIn && token!=undefined ? (
+  return  token ? (
     <Outlet/>
   ) : (
     <Navigate to="/login" replace />
   );
 };
 
-export { PrivateRoute };
+const PrivateRoutePrincipal = () => {
+  const token = Cookies.get('Authorization')
+  const role = Cookies.get('Role')
+return  token && role == "principal" ? (
+  <Outlet/>
+) : (
+  <Navigate to="/" replace />
+);
+};
+
+export { PrivateRoute, PrivateRoutePrincipal };
 

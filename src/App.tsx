@@ -1,61 +1,26 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Home from "./components/home";
-import { Login } from "./components/login";
-import { PrivateRoute } from "./components/privateRoute";
-import { API_URL, getUser } from "./util";
-
-export interface User {
-  isLoggedIn: boolean;
-  username: string;
-  fullname: string;
-  class: number;
-  email?: string;
-  role: string;
-}
-
+import { StickyNavbar } from "./components/navbar";
+import { PrivateRoute, PrivateRoutePrincipal } from "./components/privateRoute";
+import Home from "./pages/home";
+import { Login } from "./pages/login";
+import { AddNewEntry } from "./pages/addNewRecord";
 function App() {
-  const [user,setUser] = useState<User>({
-    isLoggedIn : false,
-    username : "",
-    fullname : "",
-    class:0,
-    email : "",
-    role:" "
-  });
 
-  useEffect(()=>{
-    const retrieveUser = getUser()
-    if (!retrieveUser || retrieveUser.isLoggedIn == false) {
-      const apiCall = async () => {
-        const response = await fetch(API_URL+'/verify',{
-          credentials: 'include'
-        })
-        if (response.ok){
-        const data = await response.json()
-        data.isLoggedIn = true
-        window.sessionStorage.setItem('user',JSON.stringify(data))
-        setUser(data)
-        }
-      }
-      apiCall()
-    }
-  })
+
   
   return (
     <div className="App">
         <BrowserRouter>
+        <StickyNavbar/>
           <Routes>
-            <Route path="/login" Component={Login} />
-            <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Route index element={<Home />} />
-              </PrivateRoute>
-            }
-          />
+            <Route path="/login" element={<Login/>} />
+            <Route element={<PrivateRoute/>}>
+              <Route path="/" element={<Home/>}/>
+            </Route>
+            <Route element={<PrivateRoutePrincipal/>}>
+              <Route path="/addNewEntry" element={<AddNewEntry/>}/>
+            </Route>
           </Routes>
         </BrowserRouter>
     </div>
