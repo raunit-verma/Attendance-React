@@ -18,6 +18,7 @@ import Cookies from "js-cookie";
     const [loading,setIsLoading] = useState(false)
     const [message,setMessage] = useState('')
     const [alert,setAlert] = useState(false)
+    
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
         e.target.id == "username" ? setUsername(e.target.value) : setPassword(e.target.value)
     }
@@ -35,9 +36,6 @@ import Cookies from "js-cookie";
             })
             setIsLoading(false)
             if (response.ok){
-              const data = await response.json();
-              Cookies.set('Role',data.role,{ expires: 1})
-              window.sessionStorage.setItem('user',JSON.stringify(data))
               navigate('/')
             } else {
                 if (response.status == 401){

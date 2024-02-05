@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navbar,
   Collapse,
@@ -28,7 +28,16 @@ import {
   TagIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
- 
+import { useNavigate } from "react-router-dom";
+import { getUser } from "../util";
+import Cookies from "js-cookie";
+import { title } from "process";
+
+type NavListItem = {
+  title: string;
+  path: string;
+};
+
 const navListMenuItems = [
   {
     title: "Products",
@@ -76,7 +85,29 @@ const navListMenuItems = [
     icon: TagIcon,
   },
 ];
- 
+
+const navListStudent = [
+  {
+    title:"Home",
+    path:"/"
+  }
+]
+
+const navListPrincipal = [
+  {
+    title:"Home",
+    path:"/"
+  },
+  {
+    title: "Add New",
+    path : "/addNewEntry"
+  },
+  {
+    title: "Get Teacher Attendance",
+    path : "/getTeacherAttendance"
+  }
+]
+
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -108,9 +139,9 @@ function NavListMenu() {
           </div>
         </MenuItem>
       </a>
-    ),
+    )
   );
- 
+
   return (
     <React.Fragment>
       <Menu
@@ -143,7 +174,7 @@ function NavListMenu() {
             </ListItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden  rounded-xl lg:block">
+        <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
           <ul className="grid grid-cols-3 gap-y-2 outline-none outline-0">
             {renderItems}
           </ul>
@@ -155,14 +186,27 @@ function NavListMenu() {
     </React.Fragment>
   );
 }
- 
-function NavList() {
+
+function NavList({navBarList}:{navBarList : NavListItem[]}) {
+  const data = navBarList
+  const navigate = useNavigate();
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
-      <Typography
+      {data.map(({title,path})=>{
+        return <Typography
         as="a"
         href="#"
-        variant="small"
+        variant="h6"
+        color="blue-gray"
+        className="font-medium"
+      >
+        <ListItem onClick={()=>{navigate(path)}} className="flex items-center gap-2 py-2 pr-4">{title}</ListItem>
+      </Typography>
+      })}
+      {/* <Typography
+        as="a"
+        href="#"
+        variant="h6"
         color="blue-gray"
         className="font-medium"
       >
@@ -172,51 +216,90 @@ function NavList() {
       <Typography
         as="a"
         href="#"
-        variant="small"
+        variant="h6"
         color="blue-gray"
         className="font-medium"
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
           Contact Us
         </ListItem>
-      </Typography>
+      </Typography> */}
     </List>
   );
 }
- 
+
+
 export function StickyNavbar() {
+  const [pageTitle, setPageTitle] = useState("Login");
+  const [loginLogoutButton, setLoginLogoutButton] = useState("Log In");
+  const navigate = useNavigate();
   const [openNav, setOpenNav] = React.useState(false);
- 
+  const user = JSON.parse(getUser());
+
+  const logoutFn = () =>{
+    Cookies.remove('Authorization',{ path: '/', domain: 'localhost' })
+    navigate('/login')
+  }
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+
+    currentPath != "/login"
+      ? setLoginLogoutButton("Log Out")
+      : setLoginLogoutButton("Log In");
+
+    if (currentPath === "/login") {
+      setPageTitle("Login");
+    } else if (currentPath === "/addNewEntry") {
+      setPageTitle("Add New Entry");
+    } else {
+      setPageTitle("Home");
+    }
+  }, [navigate]);
+
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false),
+      () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
- 
+
   return (
-    <div className="max-h-4">
-        <Navbar className="mx-auto px-4 py-2 min-w-full">
-      <div className="flex items-center justify-between text-blue-gray-900">
+    // max-w-screen-xl
+    <Navbar fullWidth color="transparent" className="mx-auto px-2 py-2">
+      <div className="flex items-center justify-between  text-blue-gray-900">
         <Typography
           as="a"
           href="#"
           variant="h6"
           className="mr-4 cursor-pointer py-1.5 lg:ml-2"
         >
-          Material Tailwind
+          {pageTitle}
         </Typography>
         <div className="hidden lg:block">
-          <NavList />
-        </div>
-        <div className="hidden gap-2 lg:flex">
-          <Button variant="text" size="sm" color="blue-gray">
+            <NavList  navBarList={user.role == "student" ? navListStudent : navListPrincipal}/>
+          </div>
+        <div className="flex items-center flex-row ">
+          
+
+          <Typography
+            as="a"
+            href="#"
+            variant="h6"
+            className="mr-4 cursor-pointer py-1.5 lg:ml-2"
+          >
+            Welcome{user.fullname ? ", " +user.fullname : ""}
+          </Typography>
+
+          <div className="hidden gap-2 lg:flex">
+            {/* <Button variant="text" size="sm" color="blue-gray">
             Log In
-          </Button>
-          <Button variant="gradient" size="sm">
-            Sign In
-          </Button>
+          </Button> */}
+            <Button variant="gradient" onClick={logoutFn} size="sm">
+              {loginLogoutButton}
+            </Button>
+          </div>
         </div>
+
         <IconButton
           variant="text"
           color="blue-gray"
@@ -230,19 +313,16 @@ export function StickyNavbar() {
           )}
         </IconButton>
       </div>
+
       <Collapse open={openNav}>
-        <NavList />
+        <NavList navBarList={user.role == "student" ? navListStudent : navListStudent}/>
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          <Button variant="outlined" size="sm" color="blue-gray" fullWidth>
-            Log In
-          </Button>
-          <Button variant="gradient" size="sm" fullWidth>
-            Sign In
+          
+          <Button onClick={logoutFn} variant="gradient" size="sm" fullWidth>
+            {loginLogoutButton}
           </Button>
         </div>
       </Collapse>
     </Navbar>
-    </div>
-    
   );
 }

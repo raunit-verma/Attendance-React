@@ -8,36 +8,28 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-
-import { ChangeEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { API_URL } from "../util";
-
-function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
-  }
 
 export function AddNewEntry() {
   const [newUser, setNewUser] = useState({
     username: "",
     password: "",
     fullname: "",
-    class: 0,
+    class: 1,
     email: "",
     role: "student",
   });
   const [loading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState(false);
-  const studentClass = ["1", "2", "3"];
-  const [selectedClass, setSelectedClass] = useState(0);
+  const studentClass = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  const [color, setColor] = useState("red");
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.type === "radio") {
+      const selectedRole =
+        e.target.id === "role-teacher" ? "teacher" : "student";
 
-const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.type === 'radio') {
-      const selectedRole = e.target.id === 'role-teacher' ? 'teacher' : 'student';
-      
       setNewUser((prevUser) => {
         const updatedUser = { ...prevUser, role: selectedRole };
         return updatedUser;
@@ -50,7 +42,17 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-  const tryAddingNewUser = async () => {
+  const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e.target.value);
+    setNewUser((prevUser) => {
+      const updatedUser = { ...prevUser, class: parseInt(e.target.value) };
+      return updatedUser;
+    });
+  };
+
+  const tryAddingNewUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(newUser);
     try {
       setIsLoading(true);
       const response = await fetch(API_URL + "/addNewUser", {
@@ -59,16 +61,14 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         body: JSON.stringify(newUser),
       });
       setIsLoading(false);
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Data",data);
-      } else {
-        console.log(response.status)
-        setAlert(true);
-        setTimeout(() => {
-          setAlert(false);
-        }, 2000);
-      }
+      const data = await response.json();
+      if (data.code == 200) setColor("green");
+      else setColor("red");
+      setMessage(data.message);
+      setAlert(true);
+      setTimeout(() => {
+        setAlert(false);
+      }, 5000);
     } catch (error) {
       console.log(error);
     }
@@ -77,7 +77,7 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   useEffect(() => {}, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen px-1 py-2">
       <Card
         style={{ backgroundColor: "#F8FAFC" }}
         className="w-80 sm:w-96 px-5"
@@ -89,7 +89,7 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <Typography color="gray" className="mt-1 font-normal">
           Enter the details of new student/teacher.
         </Typography>
-        <form className="mt-8 mb-2">
+        <form onSubmit={tryAddingNewUser} className="mt-8 mb-2">
           <div className="flex flex-col gap-6">
             <Typography variant="h6" color="blue-gray" className="-mb-3">
               Username
@@ -97,6 +97,7 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             <Input
               id="username"
               size="lg"
+              required
               onChange={onInputChange}
               placeholder="username"
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -110,6 +111,7 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             <Input
               id="password"
               type="password"
+              required
               onChange={onInputChange}
               size="lg"
               placeholder="********"
@@ -123,10 +125,11 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               Name
             </Typography>
             <Input
-              id="name"
+              id="fullname"
               type="text"
               onChange={onInputChange}
               size="lg"
+              required
               placeholder="name"
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
@@ -164,140 +167,32 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 defaultChecked
               />
             </div>
-
-            <button
-              id="dropdownDefaultButton"
-              data-dropdown-toggle="dropdown"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex flex-row items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              type="button"
-            >
-              Select Class{" "}
-              <svg
-                className="w-2.5 h-2.5 ms-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
+            <div>
+              <select
+                id="class"
+                defaultValue={newUser.class}
+                onChange={onDropDownChange}
+                disabled={newUser.role == "teacher" ? true : false}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 4 4 4-4"
-                />
-              </svg>
-            </button>
-
-            <div
-              id="dropdown"
-              className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-            >
-              <ul
-                className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownDefaultButton"
-              >
-                {studentClass.map((val: string) => {
+                <option selected>Choose a Class</option>
+                {studentClass.map((myClass) => {
                   return (
-                    <li key={val + "1"}>
-                      <a
-                        key={val}
-                        href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        {val}
-                      </a>
-                    </li>
+                    <option key={myClass} value={myClass}>
+                      {myClass}
+                    </option>
                   );
                 })}
-              </ul>
+              </select>
             </div>
-
-    <Menu as="div" className="relative inline-block text-left">
-      <div>
-        <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-          Options
-          <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
-        </Menu.Button>
-      </div>
-
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Account settings
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Support
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  License
-                </a>
-              )}
-            </Menu.Item>
-            <form method="POST" action="#">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    type="submit"
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block w-full px-4 py-2 text-left text-sm'
-                    )}
-                  >
-                    Sign out
-                  </button>
-                )}
-              </Menu.Item>
-            </form>
-          </div>
-        </Menu.Items>
-      </Transition>
-    </Menu>
           </div>
 
-          
-          <Button className="mt-6" fullWidth onClick={tryAddingNewUser}>
+          <Button type="submit" className="mt-6" fullWidth>
             Add
           </Button>
         </form>
       </Card>
+
       {loading && (
         <div>
           <div className="absolute inset-0 bg-white bg-opacity-75 blur-sm"></div>
@@ -308,7 +203,10 @@ const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </div>
       )}
       {alert && (
-        <Alert className="absolute w-max top-10 right-5" color="red">
+        <Alert
+          className="absolute w-max top-10 right-5"
+          color={color == "red" ? "red" : "green"}
+        >
           {message}
         </Alert>
       )}

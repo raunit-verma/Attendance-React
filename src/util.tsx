@@ -1,25 +1,16 @@
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL
 
-const getUserDetailsAPICall = async () => {
-  console.log("api call")
-  const response = await fetch(API_URL+'/verify',{
-    credentials: 'include'
-  })
-  if (response.ok){
-  const data = await response.json()
-  window.sessionStorage.setItem('user',JSON.stringify(data))
-  }
-}
 
 const getUser = () =>{
-  if (window.sessionStorage.getItem('user')==null && Cookies.get('Authorization')) getUserDetailsAPICall()
-  return window.sessionStorage.getItem('user')!=null ? JSON.parse(window.sessionStorage.getItem('user') || "") : null
+  if(!getAuthenticationStatus()) return '{}'
+  return JSON.stringify(jwtDecode(Cookies.get('Authorization') || ""))
 }
 
 const getAuthenticationStatus = () =>{
-  return getUser()!=null && Cookies.get('Authorization');
+  return Cookies.get('Authorization')!=undefined
 }
 
-export { API_URL, getUser, getAuthenticationStatus, getUserDetailsAPICall }
+export { API_URL, getUser, getAuthenticationStatus }
