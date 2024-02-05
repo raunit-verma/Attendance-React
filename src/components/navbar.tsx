@@ -196,6 +196,7 @@ function NavList({navBarList}:{navBarList : NavListItem[]}) {
         return <Typography
         as="a"
         href="#"
+        key={path}
         variant="h6"
         color="blue-gray"
         className="font-medium"
