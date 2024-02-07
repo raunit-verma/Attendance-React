@@ -1,11 +1,11 @@
 import { Button } from "@material-tailwind/react";
 import { Alert, Spinner } from "flowbite-react";
 import { useState } from "react";
-import { API_URL } from "../util";
+import { API_URL, formateDateTime, getUser } from "../util";
 
 type AttendanceJSON = {
-  Username: string;
-  FullName: string;
+  PunchInDate: string;
+  PunchOutDate: string;
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
@@ -16,12 +16,12 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
           <tr>
             <th className="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                Username
+                PunchIn Date & Time
               </p>
             </th>
             <th className="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                Fullname
+                PunchOut Date & Time
               </p>
             </th>
           </tr>
@@ -32,12 +32,12 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
               <tr className="even:bg-blue-gray-50/50">
                 <td className="p-4">
                   <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {val.Username}
+                    {formateDateTime(val.PunchInDate)}
                   </p>
                 </td>
                 <td className="p-4">
                   <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {val.FullName}
+                    {formateDateTime(val.PunchOutDate)}
                   </p>
                 </td>
               </tr>
@@ -49,16 +49,11 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
   );
 };
 
-const GetClassAttendance = () => {
+const ViewStudentAttendance = () => {
   const months = ["Janurary", "February","March","April","May","June","July","August","September","October","November","December"];
   const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
-  const dates:number[] = [];
-  for (let i = 1; i <= 31; i++) dates.push(i);
-  const classes = [1,2,3,4,5,6,7,8,9,10]
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
-  const [day,setDay] = useState(0);
-  const [classs,setClasss] = useState(0);
   const [loading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [alert, setAlert] = useState(false);
@@ -76,12 +71,11 @@ const GetClassAttendance = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch(API_URL + "/getClassAttendance", {
+      const response = await fetch(API_URL + "/getStudentAttendance", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({
-          class:classes[classs-1],
-          day:dates[day-1],
+          id: JSON.parse(getUser()).username,
           month: month,
           year: years[year-1],
         }),
@@ -109,8 +103,6 @@ const GetClassAttendance = () => {
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.id == "year") setYear(e.target.selectedIndex);
     else if (e.target.id == "month") setMonth(e.target.selectedIndex);
-    else if(e.target.id == "date")setDay(parseInt(e.target.value))
-    else if(e.target.id == "class")setClasss(parseInt(e.target.value))
   };
 
   return (
@@ -119,39 +111,6 @@ const GetClassAttendance = () => {
         onSubmit={getTeacherAttendance}
         className="flex gap-x-4 justify-around flex-row px-10 py-2"
       >
-        <select
-          id="class"
-          required
-          defaultValue="Choose a Class"
-          onChange={onDropDownChange}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        >
-          <option>Choose Class</option>
-          {classes.map((classs) => {
-            return (
-              <option key={classs} value={classs}>
-                {classs}
-              </option>
-            );
-          })}
-        </select>
-
-        <select
-          id="date"
-          required
-          defaultValue="Choose a Date"
-          onChange={onDropDownChange}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        >
-          <option>Choose Date</option>
-          {dates.map((date) => {
-            return (
-              <option key={date} value={date}>
-                {date}
-              </option>
-            );
-          })}
-        </select>
         
         <select
           id="month"
@@ -214,4 +173,4 @@ const GetClassAttendance = () => {
   );
 };
 
-export default GetClassAttendance;
+export default ViewStudentAttendance;

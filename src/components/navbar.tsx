@@ -18,9 +18,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-import {
-  SquaresPlusIcon
-} from "@heroicons/react/24/solid";
+import { SquaresPlusIcon } from "@heroicons/react/24/solid";
 
 import { useNavigate } from "react-router-dom";
 import { API_URL, getUser } from "../util";
@@ -36,45 +34,49 @@ const navListMenuItems = [
     title: "Products",
     description: "Find the perfect solution for your needs.",
     icon: SquaresPlusIcon,
-  }
+  },
 ];
 
 const navListStudent = [
   {
-    title:"Home",
-    path:"/"
+    title: "Home",
+    path: "/",
+  },
+  {
+    title: "My Attendance",
+    path: "/getStudentAttendance",
   }
-]
+];
 
 const navListTeacher = [
   {
     title: "Home",
-    path: "/"
+    path: "/",
   },
   {
     title: "My Attendance",
-    path:"/getTeacherAttendance"
+    path: "/getTeacherAttendance",
   },
   {
     title: "Get Class Attendance",
-    path: "/getClassAttendance"
-  }
-]
+    path: "/getClassAttendance",
+  },
+];
 
 const navListPrincipal = [
   {
-    title:"Home",
-    path:"/"
+    title: "Home",
+    path: "/",
   },
   {
     title: "Add New",
-    path : "/addNewEntry"
+    path: "/addNewEntry",
   },
   {
     title: "Get Teacher Attendance",
-    path : "/getTeachersAttendance"
-  }
-]
+    path: "/getTeachersAttendance",
+  },
+];
 
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -155,22 +157,31 @@ function NavListMenu() {
   );
 }
 
-function NavList({navBarList}:{navBarList : NavListItem[]}) {
-  const data = navBarList
+function NavList({ navBarList }: { navBarList: NavListItem[] }) {
+  const data = navBarList;
   const navigate = useNavigate();
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
-      {data.map(({title,path})=>{
-        return <Typography
-        as="a"
-        href="#"
-        key={path}
-        variant="h6"
-        color="blue-gray"
-        className="font-medium"
-      >
-        <ListItem onClick={()=>{navigate(path)}} className="flex items-center gap-2 py-2 pr-4">{title}</ListItem>
-      </Typography>
+      {data.map(({ title, path }) => {
+        return (
+          <Typography
+            as="a"
+            href="#"
+            key={path}
+            variant="h6"
+            color="blue-gray"
+            className="font-medium"
+          >
+            <ListItem
+              onClick={() => {
+                navigate(path);
+              }}
+              className="flex items-center gap-2 py-2 pr-4"
+            >
+              {title}
+            </ListItem>
+          </Typography>
+        );
       })}
       {/* <Typography
         as="a"
@@ -197,41 +208,44 @@ function NavList({navBarList}:{navBarList : NavListItem[]}) {
   );
 }
 
-
 export function StickyNavbar() {
   const [pageTitle, setPageTitle] = useState("Login");
   const [loginLogoutButton, setLoginLogoutButton] = useState("Log In");
   const navigate = useNavigate();
   const [openNav, setOpenNav] = React.useState(false);
   const user = JSON.parse(getUser());
-  const [status, setStatus] = useState(false)
-  const logoutFn = () =>{
-    Cookies.remove('Authorization',{ path: '/', domain: 'localhost' })
-    navigate('/login')
-  }
+  const [status, setStatus] = useState(false);
+  let navList:NavListItem[] = []
+  if(user.role == "student") navList = navListStudent
+  else if(user.role == "teacher") navList = navListTeacher
+  else if(user.role == "principal") navList = navListPrincipal
 
-  const fetchStatus = async () =>{
-    const response = await fetch(API_URL+"/fetchStatus",{
-      credentials: 'include'
-    })
-    if(response.ok){
+  const logoutFn = () => {
+    Cookies.remove("Authorization", { path: "/", domain: "localhost" });
+    navigate("/login");
+  };
+
+  const fetchStatus = async () => {
+    const response = await fetch(API_URL + "/fetchStatus", {
+      credentials: "include",
+    });
+    if (response.ok) {
       const data = await response.json();
-      setStatus(data.status)
+      setStatus(data.status);
     }
-  }
+  };
 
-  const punchInOutFn = async () =>{
-    await fetch(API_URL + (status ? "/punchOut" : "/punchIn"),{
-      credentials: 'include'
-    })
-    fetchStatus()
-  }
+  const punchInOutFn = async () => {
+    await fetch(API_URL + (status ? "/punchOut" : "/punchIn"), {
+      credentials: "include",
+    });
+    fetchStatus();
+  };
 
   useEffect(() => {
-
-    const username = user.username
-    if(username!=undefined){
-      fetchStatus()
+    const username = user.username;
+    if (username != undefined) {
+      fetchStatus();
     }
 
     const currentPath = window.location.pathname;
@@ -269,27 +283,34 @@ export function StickyNavbar() {
           {pageTitle}
         </Typography>
         <div className="hidden lg:block">
-            <NavList  navBarList={user.role == "student" ? navListStudent : (user.role == "teacher" ? navListTeacher : navListPrincipal)}/>
-          </div>
+          <NavList
+            navBarList={navList}
+          />
+        </div>
         <div className="flex items-center flex-row ">
-          
-
           <Typography
             as="a"
             href="#"
             variant="h6"
             className="mr-4 cursor-pointer py-1.5 lg:ml-2"
           >
-            Welcome{user.fullname ? ", " +user.fullname : ""}
+            Welcome{user.fullname ? ", " + user.fullname : ""}
           </Typography>
 
           <div className="hidden gap-2 lg:flex">
             {/* <Button variant="text" size="sm" color="blue-gray">
             Log In
           </Button> */}
-          {user.role && user.role !="principal" && <Button variant="gradient" color={status ? "green" : "red"} onClick={punchInOutFn} size="sm">
-              {status ? "Punch Out" : "Punch In"}
-            </Button>}
+            {user.role && user.role != "principal" && (
+              <Button
+                variant="gradient"
+                color={status ? "green" : "red"}
+                onClick={punchInOutFn}
+                size="sm"
+              >
+                {status ? "Punch Out" : "Punch In"}
+              </Button>
+            )}
             <Button variant="gradient" onClick={logoutFn} size="sm">
               {loginLogoutButton}
             </Button>
@@ -311,9 +332,10 @@ export function StickyNavbar() {
       </div>
 
       <Collapse open={openNav}>
-        <NavList navBarList={user.role == "student" ? navListStudent : (user.role == "teacher" ? navListTeacher : navListPrincipal)}/>
+        <NavList
+          navBarList={navList}
+        />
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          
           <Button onClick={logoutFn} variant="gradient" size="sm" fullWidth>
             {loginLogoutButton}
           </Button>
