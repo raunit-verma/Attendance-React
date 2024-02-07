@@ -1,11 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { StickyNavbar } from "./components/navbar";
-import { PrivateRoute, PrivateRoutePrincipal } from "./components/privateRoute";
+import { PrivateRoute, PrivateRoutePrincipal, PrivateRouteTeacher } from "./components/privateRoute";
 import { AddNewEntry } from "./pages/addNewRecord";
+import GetClassAttendance from "./pages/getClassAttendance";
 import Home from "./pages/home";
 import { Login } from "./pages/login";
-import ViewTeacherAttendancebyPrincipal from "./pages/viewTeacherAttendance";
+import ViewTeacherAttendancebyTeacher from "./pages/viewTeacherAttendance";
+import ViewTeachersAttendancebyPrincipal from "./pages/viewTeachersAttendance";
 function App() {
 
 
@@ -20,7 +22,11 @@ function App() {
             </Route>
             <Route element={<PrivateRoutePrincipal/>}>
               <Route path="/addNewEntry" element={<AddNewEntry/>}/>
-              <Route path="/getTeacherAttendance" element={<ViewTeacherAttendancebyPrincipal/>}/>
+              <Route path="/getTeachersAttendance" element={<ViewTeachersAttendancebyPrincipal/>}/>
+            </Route>
+            <Route element={<PrivateRouteTeacher/>}>
+              <Route path="/getTeacherAttendance" element={<ViewTeacherAttendancebyTeacher/>}/>
+              <Route path="/getClassAttendance" element={<GetClassAttendance/>}/>
             </Route>
           </Routes>
         </BrowserRouter>

@@ -1,7 +1,8 @@
-import { Button } from "@material-tailwind/react";
+import { Button, Input } from "@material-tailwind/react";
 import { Alert, Spinner } from "flowbite-react";
 import { useState } from "react";
-import { API_URL, formateDateTime, getUser } from "../util";
+import { API_URL } from "../util";
+import { formateDateTime } from "../util";
 
 type AttendanceJSON = {
   PunchInDate: string;
@@ -49,9 +50,10 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
   );
 };
 
-const ViewTeacherAttendancebyTeacher = () => {
+const ViewTeachersAttendancebyPrincipal = () => {
   const months = ["Janurary", "February","March","April","May","June","July","August","September","October","November","December"];
   const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const [username, setUsername] = useState("");
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
   const [loading, setIsLoading] = useState(false);
@@ -75,7 +77,7 @@ const ViewTeacherAttendancebyTeacher = () => {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({
-          id: JSON.parse(getUser()).username,
+          id: username,
           month: month,
           year: years[year-1],
         }),
@@ -100,6 +102,10 @@ const ViewTeacherAttendancebyTeacher = () => {
     }
   };
 
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
+
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.id == "year") setYear(e.target.selectedIndex);
     else if (e.target.id == "month") setMonth(e.target.selectedIndex);
@@ -111,6 +117,8 @@ const ViewTeacherAttendancebyTeacher = () => {
         onSubmit={getTeacherAttendance}
         className="flex gap-x-4 justify-around flex-row px-10 py-2"
       >
+        <Input color="blue" required onChange={onInputChange} label="Username" />
+        {/* <SearchInput/> */}
         
         <select
           id="month"
@@ -173,4 +181,4 @@ const ViewTeacherAttendancebyTeacher = () => {
   );
 };
 
-export default ViewTeacherAttendancebyTeacher;
+export default ViewTeachersAttendancebyPrincipal;

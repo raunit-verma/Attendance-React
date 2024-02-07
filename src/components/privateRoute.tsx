@@ -9,6 +9,15 @@ const PrivateRoute = () => {
   );
 };
 
+const PrivateRouteTeacher = () =>{
+  const user =  JSON.parse(getUser())
+  return  user.role == "teacher" ? (
+    <Outlet/>
+  ) : (
+    <Navigate to="/" replace />
+  );
+}
+
 const PrivateRoutePrincipal = () => {
   const user =  JSON.parse(getUser())
   return  user.role == "principal" ? (
@@ -18,5 +27,5 @@ const PrivateRoutePrincipal = () => {
   );
 };
 
-export { PrivateRoute, PrivateRoutePrincipal };
+export { PrivateRoute, PrivateRoutePrincipal, PrivateRouteTeacher };
 

@@ -17,21 +17,14 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+
 import {
-  Bars4Icon,
-  GlobeAmericasIcon,
-  NewspaperIcon,
-  PhoneIcon,
-  RectangleGroupIcon,
-  SquaresPlusIcon,
-  SunIcon,
-  TagIcon,
-  UserGroupIcon,
+  SquaresPlusIcon
 } from "@heroicons/react/24/solid";
+
 import { useNavigate } from "react-router-dom";
-import { getUser } from "../util";
+import { API_URL, getUser } from "../util";
 import Cookies from "js-cookie";
-import { title } from "process";
 
 type NavListItem = {
   title: string;
@@ -43,53 +36,28 @@ const navListMenuItems = [
     title: "Products",
     description: "Find the perfect solution for your needs.",
     icon: SquaresPlusIcon,
-  },
-  {
-    title: "About Us",
-    description: "Meet and learn about our dedication",
-    icon: UserGroupIcon,
-  },
-  {
-    title: "Blog",
-    description: "Find the perfect solution for your needs.",
-    icon: Bars4Icon,
-  },
-  {
-    title: "Services",
-    description: "Learn how we can help you achieve your goals.",
-    icon: SunIcon,
-  },
-  {
-    title: "Support",
-    description: "Reach out to us for assistance or inquiries",
-    icon: GlobeAmericasIcon,
-  },
-  {
-    title: "Contact",
-    description: "Find the perfect solution for your needs.",
-    icon: PhoneIcon,
-  },
-  {
-    title: "News",
-    description: "Read insightful articles, tips, and expert opinions.",
-    icon: NewspaperIcon,
-  },
-  {
-    title: "Products",
-    description: "Find the perfect solution for your needs.",
-    icon: RectangleGroupIcon,
-  },
-  {
-    title: "Special Offers",
-    description: "Explore limited-time deals and bundles",
-    icon: TagIcon,
-  },
+  }
 ];
 
 const navListStudent = [
   {
     title:"Home",
     path:"/"
+  }
+]
+
+const navListTeacher = [
+  {
+    title: "Home",
+    path: "/"
+  },
+  {
+    title: "My Attendance",
+    path:"/getTeacherAttendance"
+  },
+  {
+    title: "Get Class Attendance",
+    path: "/getClassAttendance"
   }
 ]
 
@@ -104,7 +72,7 @@ const navListPrincipal = [
   },
   {
     title: "Get Teacher Attendance",
-    path : "/getTeacherAttendance"
+    path : "/getTeachersAttendance"
   }
 ]
 
@@ -236,12 +204,36 @@ export function StickyNavbar() {
   const navigate = useNavigate();
   const [openNav, setOpenNav] = React.useState(false);
   const user = JSON.parse(getUser());
-
+  const [status, setStatus] = useState(false)
   const logoutFn = () =>{
     Cookies.remove('Authorization',{ path: '/', domain: 'localhost' })
     navigate('/login')
   }
+
+  const fetchStatus = async () =>{
+    const response = await fetch(API_URL+"/fetchStatus",{
+      credentials: 'include'
+    })
+    if(response.ok){
+      const data = await response.json();
+      setStatus(data.status)
+    }
+  }
+
+  const punchInOutFn = async () =>{
+    await fetch(API_URL + (status ? "/punchOut" : "/punchIn"),{
+      credentials: 'include'
+    })
+    fetchStatus()
+  }
+
   useEffect(() => {
+
+    const username = user.username
+    if(username!=undefined){
+      fetchStatus()
+    }
+
     const currentPath = window.location.pathname;
 
     currentPath != "/login"
@@ -277,7 +269,7 @@ export function StickyNavbar() {
           {pageTitle}
         </Typography>
         <div className="hidden lg:block">
-            <NavList  navBarList={user.role == "student" ? navListStudent : navListPrincipal}/>
+            <NavList  navBarList={user.role == "student" ? navListStudent : (user.role == "teacher" ? navListTeacher : navListPrincipal)}/>
           </div>
         <div className="flex items-center flex-row ">
           
@@ -295,6 +287,9 @@ export function StickyNavbar() {
             {/* <Button variant="text" size="sm" color="blue-gray">
             Log In
           </Button> */}
+          {user.role && user.role !="principal" && <Button variant="gradient" color={status ? "green" : "red"} onClick={punchInOutFn} size="sm">
+              {status ? "Punch Out" : "Punch In"}
+            </Button>}
             <Button variant="gradient" onClick={logoutFn} size="sm">
               {loginLogoutButton}
             </Button>
@@ -316,7 +311,7 @@ export function StickyNavbar() {
       </div>
 
       <Collapse open={openNav}>
-        <NavList navBarList={user.role == "student" ? navListStudent : navListStudent}/>
+        <NavList navBarList={user.role == "student" ? navListStudent : (user.role == "teacher" ? navListTeacher : navListPrincipal)}/>
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
           
           <Button onClick={logoutFn} variant="gradient" size="sm" fullWidth>

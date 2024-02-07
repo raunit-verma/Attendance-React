@@ -1,7 +1,7 @@
 import { Button } from "@material-tailwind/react";
 import { Alert, Spinner } from "flowbite-react";
 import { useState } from "react";
-import { API_URL, formateDateTime, getUser } from "../util";
+import { API_URL, formateDateTime } from "../util";
 
 type AttendanceJSON = {
   PunchInDate: string;
@@ -49,9 +49,12 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
   );
 };
 
-const ViewTeacherAttendancebyTeacher = () => {
+const GetClassAttendance = () => {
   const months = ["Janurary", "February","March","April","May","June","July","August","September","October","November","December"];
   const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const dates = [1,2,3,4,5,6,7,8,9,10]
+  const classes = [1,2,3,4,5,6,7,8,9,10]
+  const [username, setUsername] = useState("");
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
   const [loading, setIsLoading] = useState(false);
@@ -75,7 +78,7 @@ const ViewTeacherAttendancebyTeacher = () => {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({
-          id: JSON.parse(getUser()).username,
+          id: username,
           month: month,
           year: years[year-1],
         }),
@@ -100,6 +103,10 @@ const ViewTeacherAttendancebyTeacher = () => {
     }
   };
 
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+  };
+
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.id == "year") setYear(e.target.selectedIndex);
     else if (e.target.id == "month") setMonth(e.target.selectedIndex);
@@ -111,6 +118,39 @@ const ViewTeacherAttendancebyTeacher = () => {
         onSubmit={getTeacherAttendance}
         className="flex gap-x-4 justify-around flex-row px-10 py-2"
       >
+        <select
+          id="class"
+          required
+          defaultValue="Choose a Class"
+          onChange={onDropDownChange}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option>Choose Class</option>
+          {classes.map((classs) => {
+            return (
+              <option key={classs} value={classs}>
+                {classs}
+              </option>
+            );
+          })}
+        </select>
+
+        <select
+          id="date"
+          required
+          defaultValue="Choose a Date"
+          onChange={onDropDownChange}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option>Choose Date</option>
+          {dates.map((date) => {
+            return (
+              <option key={date} value={date}>
+                {date}
+              </option>
+            );
+          })}
+        </select>
         
         <select
           id="month"
@@ -173,4 +213,4 @@ const ViewTeacherAttendancebyTeacher = () => {
   );
 };
 
-export default ViewTeacherAttendancebyTeacher;
+export default GetClassAttendance;
