@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+
 import { StickyNavbar } from "./components/navbar";
 import { PrivateRoute, PrivateRoutePrincipal, PrivateRouteStudent, PrivateRouteTeacher } from "./components/privateRoute";
 import { AddNewEntry } from "./pages/addNewRecord";
@@ -22,15 +23,15 @@ function App() {
               <Route path="/" element={<Home/>}/>
             </Route>
             <Route element={<PrivateRoutePrincipal/>}>
-              <Route path="/addNewEntry" element={<AddNewEntry/>}/>
-              <Route path="/getTeachersAttendance" element={<ViewTeachersAttendancebyPrincipal/>}/>
+              <Route path="/addnewentry" element={<AddNewEntry/>}/>
+              <Route path="/getteachersattendance" element={<ViewTeachersAttendancebyPrincipal/>}/>
             </Route>
             <Route element={<PrivateRouteTeacher/>}>
-              <Route path="/getTeacherAttendance" element={<ViewTeacherAttendancebyTeacher/>}/>
-              <Route path="/getClassAttendance" element={<GetClassAttendance/>}/>
+              <Route path="/getteacherattendance" element={<ViewTeacherAttendancebyTeacher/>}/>
+              <Route path="/getclassattendance" element={<GetClassAttendance/>}/>
             </Route>
             <Route element={<PrivateRouteStudent/>}>
-              <Route path="/getStudentAttendance" element={<ViewStudentAttendance/>}/>
+              <Route path="/getstudentattendance" element={<ViewStudentAttendance/>}/>
               </Route>
           </Routes>
         </BrowserRouter>

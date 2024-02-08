@@ -226,7 +226,7 @@ export function StickyNavbar() {
   };
 
   const fetchStatus = async () => {
-    const response = await fetch(API_URL + "/fetchStatus", {
+    const response = await fetch(API_URL + "/fetchstatus", {
       credentials: "include",
     });
     if (response.ok) {
@@ -236,7 +236,7 @@ export function StickyNavbar() {
   };
 
   const punchInOutFn = async () => {
-    await fetch(API_URL + (status ? "/punchOut" : "/punchIn"), {
+    await fetch(API_URL + (status ? "/punchout" : "/punchin"), {
       credentials: "include",
     });
     fetchStatus();

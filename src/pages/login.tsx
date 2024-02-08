@@ -1,16 +1,15 @@
 import {
-    Card,
-    Input,
-    Alert,
-    Button,
-    Typography,
-    Spinner
-  } from "@material-tailwind/react";
+  Alert,
+  Button,
+  Card,
+  Input,
+  Spinner,
+  Typography
+} from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { API_URL, getAuthenticationStatus } from "../util";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-  
+import { API_URL, getAuthenticationStatus } from "../util";
+import MyAlert from "../components/dismiss";
   export function Login() {
     const navigate = useNavigate();
     const [username,setUsername] = useState('');
@@ -34,8 +33,9 @@ import Cookies from "js-cookie";
                     password: password
                 })
             })
+            const data = await response.json()
             setIsLoading(false)
-            if (response.ok){
+            if (!data.message){
               navigate('/')
             } else {
                 if (response.status == 401){
@@ -108,6 +108,7 @@ import Cookies from "js-cookie";
             <Spinner color="indigo" className="absolute top-1/2 left-1/2 h-12 w-12 "/>
         </div>) }
         {alert && (<Alert className="absolute w-max top-10 right-5" color="red">{message}</Alert>)}
+        <MyAlert/>
       </div>
     );
   }

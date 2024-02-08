@@ -71,7 +71,7 @@ const ViewStudentAttendance = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch(API_URL + "/getStudentAttendance", {
+      const response = await fetch(API_URL + "/getstudentattendance", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({

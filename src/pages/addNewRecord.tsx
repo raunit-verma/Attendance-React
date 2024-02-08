@@ -55,7 +55,7 @@ export function AddNewEntry() {
     console.log(newUser);
     try {
       setIsLoading(true);
-      const response = await fetch(API_URL + "/addNewUser", {
+      const response = await fetch(API_URL + "/addnewuser", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify(newUser),
