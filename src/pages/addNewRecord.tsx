@@ -7,7 +7,7 @@ import {
   Spinner,
   Typography,
 } from "@material-tailwind/react";
-
+import { toast } from "../components/alert";
 import { useEffect, useState } from "react";
 import { API_URL } from "../util";
 
@@ -21,10 +21,7 @@ export function AddNewEntry() {
     role: "student",
   });
   const [loading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [alert, setAlert] = useState(false);
   const studentClass = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-  const [color, setColor] = useState("red");
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.type === "radio") {
       const selectedRole =
@@ -52,7 +49,6 @@ export function AddNewEntry() {
 
   const tryAddingNewUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(newUser);
     try {
       setIsLoading(true);
       const response = await fetch(API_URL + "/addnewuser", {
@@ -60,15 +56,16 @@ export function AddNewEntry() {
         method: "POST",
         body: JSON.stringify(newUser),
       });
-      setIsLoading(false);
       const data = await response.json();
-      if (data.code == 200) setColor("green");
-      else setColor("red");
-      setMessage(data.message);
-      setAlert(true);
       setTimeout(() => {
-        setAlert(false);
-      }, 5000);
+        setIsLoading(false);
+        if(!data.message || data.code==8){
+          toast.success("User added successfully.")
+        } else {
+          toast.error(data.message)
+        }
+      }, 500);
+      
     } catch (error) {
       console.log(error);
     }
@@ -201,14 +198,6 @@ export function AddNewEntry() {
             className="absolute top-1/2 left-1/2 h-12 w-12 "
           />
         </div>
-      )}
-      {alert && (
-        <Alert
-          className="absolute w-max top-10 right-5"
-          color={color == "red" ? "red" : "green"}
-        >
-          {message}
-        </Alert>
       )}
     </div>
   );

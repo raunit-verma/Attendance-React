@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Navbar,
   Collapse,
@@ -19,7 +20,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { SquaresPlusIcon } from "@heroicons/react/24/solid";
-
+import { toast } from "./alert";
 import { useNavigate } from "react-router-dom";
 import { API_URL, getUser } from "../util";
 import Cookies from "js-cookie";
@@ -209,6 +210,10 @@ function NavList({ navBarList }: { navBarList: NavListItem[] }) {
 }
 
 export function StickyNavbar() {
+  const location = useLocation();
+  const excludeStickyNavbar = location.pathname === '/login';
+
+
   const [pageTitle, setPageTitle] = useState("Login");
   const [loginLogoutButton, setLoginLogoutButton] = useState("Log In");
   const navigate = useNavigate();
@@ -236,10 +241,17 @@ export function StickyNavbar() {
   };
 
   const punchInOutFn = async () => {
-    await fetch(API_URL + (status ? "/punchout" : "/punchin"), {
+    fetch(API_URL + (status ? "/punchout" : "/punchin"), {
       credentials: "include",
-    });
-    fetchStatus();
+    })
+    .then((response)=>{
+      return response.json();
+    }).then((data:any)=>{
+      console.log(data);
+      if(data.code==8)toast.success(data.message);
+      else toast.error(data.message);
+      fetchStatus();
+    })
   };
 
   useEffect(() => {
@@ -269,6 +281,10 @@ export function StickyNavbar() {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
+
+  if (excludeStickyNavbar) {
+    return <></>
+  }
 
   return (
     // max-w-screen-xl

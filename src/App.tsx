@@ -12,10 +12,9 @@ import ViewTeacherAttendancebyTeacher from "./pages/viewTeacherAttendance";
 import ViewTeachersAttendancebyPrincipal from "./pages/viewTeachersAttendance";
 function App() {
 
-
   return (
     <div className="App">
-      <Toaster position='top-right'/>
+      <Toaster position='top-center'/>
         <BrowserRouter>
         <StickyNavbar/>
           <Routes>

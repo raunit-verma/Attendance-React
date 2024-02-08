@@ -1,7 +1,8 @@
 import { Button } from "@material-tailwind/react";
-import { Alert, Spinner } from "flowbite-react";
+import { Spinner } from "flowbite-react";
 import { useState } from "react";
 import { API_URL, formateDateTime, getUser } from "../util";
+import { toast } from "../components/alert";
 
 type AttendanceJSON = {
   PunchInDate: string;
@@ -9,6 +10,7 @@ type AttendanceJSON = {
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
+  if (!data || data.length==0)return <></>
   return (
     <div className="relative w-max py-5 px-5 flex flex-col h-full  text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
       <table className=" text-center table-auto ">
@@ -55,19 +57,13 @@ const ViewTeacherAttendancebyTeacher = () => {
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
   const [loading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [alert, setAlert] = useState(false);
-  const [color, setColor] = useState("red");
   const [attendanceData, setAttendanceData] = useState([]);
   const getTeacherAttendance = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(month==0 || year==0){
-      month == 0 ? setMessage("Please select a month.") : setMessage("Please select a year.")
-      setColor('red');
-      setAlert(true);
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
+    if (month == 0 || year == 0) {
+      if(!month)toast.error("Please select a month.")
+      if(!year)toast.error("Please select a year.")
+      return;
     }
     try {
       setIsLoading(true);
@@ -82,19 +78,11 @@ const ViewTeacherAttendancebyTeacher = () => {
       });
       setIsLoading(false);
       const data = await response.json();
-      if (response.ok) {
-        if(data==null){
-        setMessage("No data found.")
-        setColor("green");
-        }
+      if (data == null) toast.error("No record found.");
+      else if (!data.message) {
+        toast.success("Record found.");
         setAttendanceData(data);
-      } else setColor("red");
-      console.log(data);
-      //   setMessage(data.message);
-      setAlert(true);
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
+      } else toast.error(data.message);
     } catch (error) {
       console.log(error);
     }
@@ -160,14 +148,6 @@ const ViewTeacherAttendancebyTeacher = () => {
             className="absolute top-1/2 left-1/2 h-12 w-12 "
           />
         </div>
-      )}
-      {alert && (
-        <Alert
-          className="absolute w-max top-10 right-5"
-          color={color == "red" ? "red" : "green"}
-        >
-          {message}
-        </Alert>
       )}
     </div>
   );

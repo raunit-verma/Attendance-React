@@ -1,12 +1,11 @@
 import {
-  Alert,
   Button,
   Card,
   Input,
   Spinner,
   Typography
 } from "@material-tailwind/react";
-import { toast,Toaster } from "../components/alert";
+import { toast } from "../components/alert";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +20,8 @@ import { API_URL, getAuthenticationStatus } from "../util";
       e.target.id == "username" ? setUsername(e.target.value) : setPassword(e.target.value)
     }
 
-    const tryLogIn = async () =>{
+    const tryLogIn = async (e: React.FormEvent<HTMLFormElement>) =>{
+      e.preventDefault()
         try{
             setIsLoading(true)
             const response = await fetch(API_URL+"/login",{
@@ -34,7 +34,7 @@ import { API_URL, getAuthenticationStatus } from "../util";
             })
             const data = await response.json()
             setIsLoading(false)
-            if (!data.message){
+            if (data.message == undefined ){
               navigate('/')
             } else {
                 if (response.status == 401){
@@ -63,7 +63,7 @@ import { API_URL, getAuthenticationStatus } from "../util";
           <Typography color="gray" className="mt-1 font-normal">
             Nice to meet you! Enter your details to login.
           </Typography>
-          <form className="mt-8 mb-2">
+          <form className="mt-8 mb-2" onSubmit={tryLogIn}>
             <div className="flex flex-col gap-6">
               <Typography variant="h6" color="blue-gray" className="-mb-3">
                 Your Username
@@ -71,6 +71,7 @@ import { API_URL, getAuthenticationStatus } from "../util";
               <Input
               id="username"
                 size="lg"
+                required
                 onChange={onInputChange}
                 placeholder="username"
                 className="!border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -86,6 +87,7 @@ import { API_URL, getAuthenticationStatus } from "../util";
                 type="password"
                 onChange={onInputChange}
                 size="lg"
+                required
                 placeholder="********"
                 className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
@@ -93,7 +95,7 @@ import { API_URL, getAuthenticationStatus } from "../util";
                 }}
               />
             </div>
-            <Button className="mt-6" fullWidth onClick={tryLogIn}>
+            <Button type="submit" className="mt-6" fullWidth>
               Log In
             </Button>
           </form>
