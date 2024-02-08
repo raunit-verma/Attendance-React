@@ -6,20 +6,19 @@ import {
   Spinner,
   Typography
 } from "@material-tailwind/react";
+import { toast,Toaster } from "../components/alert";
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL, getAuthenticationStatus } from "../util";
-import MyAlert from "../components/dismiss";
   export function Login() {
     const navigate = useNavigate();
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
     const [loading,setIsLoading] = useState(false)
-    const [message,setMessage] = useState('')
-    const [alert,setAlert] = useState(false)
     
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
-        e.target.id == "username" ? setUsername(e.target.value) : setPassword(e.target.value)
+      e.target.id == "username" ? setUsername(e.target.value) : setPassword(e.target.value)
     }
 
     const tryLogIn = async () =>{
@@ -39,14 +38,10 @@ import MyAlert from "../components/dismiss";
               navigate('/')
             } else {
                 if (response.status == 401){
-                    setMessage('Wrong username or password.')
+                    toast.error("Wrong username or password.")
                 } else {
-                    setMessage('Some error occured.')
+                    toast.error("Some error occured.")
                 }
-                setAlert(true);
-                setTimeout(() => {
-                    setAlert(false)
-                }, 2000);
             }
         } catch(error){
             console.log(error)
@@ -107,8 +102,6 @@ import MyAlert from "../components/dismiss";
             <div className="absolute inset-0 bg-white bg-opacity-75 blur-sm"></div>
             <Spinner color="indigo" className="absolute top-1/2 left-1/2 h-12 w-12 "/>
         </div>) }
-        {alert && (<Alert className="absolute w-max top-10 right-5" color="red">{message}</Alert>)}
-        <MyAlert/>
       </div>
     );
   }

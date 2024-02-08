@@ -1,20 +1,21 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-
 import { StickyNavbar } from "./components/navbar";
+import { Toaster } from "./components/alert";
 import { PrivateRoute, PrivateRoutePrincipal, PrivateRouteStudent, PrivateRouteTeacher } from "./components/privateRoute";
 import { AddNewEntry } from "./pages/addNewRecord";
 import GetClassAttendance from "./pages/getClassAttendance";
 import Home from "./pages/home";
 import { Login } from "./pages/login";
+import ViewStudentAttendance from "./pages/viewStudentAttendance";
 import ViewTeacherAttendancebyTeacher from "./pages/viewTeacherAttendance";
 import ViewTeachersAttendancebyPrincipal from "./pages/viewTeachersAttendance";
-import ViewStudentAttendance from "./pages/viewStudentAttendance";
 function App() {
 
 
   return (
     <div className="App">
+      <Toaster position='top-right'/>
         <BrowserRouter>
         <StickyNavbar/>
           <Routes>
