@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Navbar,
@@ -256,7 +256,7 @@ export function StickyNavbar() {
 
   useEffect(() => {
     const username = user.username;
-    if (username != undefined) {
+    if (username != undefined && user.role!="principal") {
       fetchStatus();
     }
 

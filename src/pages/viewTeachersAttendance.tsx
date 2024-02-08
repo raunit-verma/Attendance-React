@@ -1,5 +1,4 @@
-import { Button, Input } from "@material-tailwind/react";
-import { Spinner } from "flowbite-react";
+import { Button, Input, Spinner } from "@material-tailwind/react";
 import { useState } from "react";
 import { toast } from "../components/alert";
 import { API_URL, formateDateTime } from "../util";
