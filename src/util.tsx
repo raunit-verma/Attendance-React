@@ -9,6 +9,7 @@ const getUser = () =>{
 }
 
 const getAuthenticationStatus = () =>{
+  console.log(Cookies.get('Authorization'))
   return Cookies.get('Authorization')!=undefined
 }
 
