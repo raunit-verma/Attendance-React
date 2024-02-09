@@ -57,7 +57,6 @@ export function AddNewEntry() {
       });
       const data = await response.json();
       setTimeout(() => {
-        setIsLoading(false);
         if(!data.message || data.code==8){
           toast.success("User added successfully.")
         } else {
@@ -67,6 +66,10 @@ export function AddNewEntry() {
       
     } catch (error) {
       toast.error("Couldn't add user.")
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 450);
     }
   };
 
@@ -183,7 +186,7 @@ export function AddNewEntry() {
             </div>
           </div>
 
-          <Button type="submit" className="mt-6" fullWidth>
+          <Button ripple={false} type="submit" className="mt-6" fullWidth>
             Add
           </Button>
         </form>

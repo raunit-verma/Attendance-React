@@ -9,7 +9,7 @@ type AttendanceJSON = {
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
-  if (!data || data.length==0)return <></>
+  if (!data || data.length == 0) return <></>;
   return (
     <div className="relative w-max py-5 px-5 flex flex-col h-full  text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
       <table className=" text-center table-auto ">
@@ -28,22 +28,23 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
           </tr>
         </thead>
         <tbody>
-          {data && data.map((val) => {
-            return (
-              <tr className="even:bg-blue-gray-50/50">
-                <td className="p-4">
-                  <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {formateDateTime(val.PunchInDate)}
-                  </p>
-                </td>
-                <td className="p-4">
-                  <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {formateDateTime(val.PunchOutDate)}
-                  </p>
-                </td>
-              </tr>
-            );
-          })}
+          {data &&
+            data.map((val) => {
+              return (
+                <tr className="even:bg-blue-gray-50/50">
+                  <td className="p-4">
+                    <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                      {formateDateTime(val.PunchInDate)}
+                    </p>
+                  </td>
+                  <td className="p-4">
+                    <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                      {formateDateTime(val.PunchOutDate)}
+                    </p>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
@@ -51,8 +52,23 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
 };
 
 const ViewTeacherAttendancebyTeacher = () => {
-  const months = ["Janurary", "February","March","April","May","June","July","August","September","October","November","December"];
-  const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  const months = [
+    "Janurary",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const years = [
+    2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030,
+  ];
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
   const [loading, setIsLoading] = useState(false);
@@ -60,8 +76,8 @@ const ViewTeacherAttendancebyTeacher = () => {
   const getTeacherAttendance = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (month == 0 || year == 0) {
-      if(!month)toast.error("Please select a month.")
-      if(!year)toast.error("Please select a year.")
+      if (!month) toast.error("Please select a month.");
+      if (!year) toast.error("Please select a year.");
       return;
     }
     try {
@@ -72,10 +88,10 @@ const ViewTeacherAttendancebyTeacher = () => {
         body: JSON.stringify({
           id: JSON.parse(getUser()).username,
           month: month,
-          year: years[year-1],
+          year: years[year - 1],
         }),
       });
-      setIsLoading(false);
+
       const data = await response.json();
       if (data == null) toast.error("No record found.");
       else if (!data.message) {
@@ -83,8 +99,9 @@ const ViewTeacherAttendancebyTeacher = () => {
         setAttendanceData(data);
       } else toast.error(data.message);
     } catch (error) {
+      toast.error("Couldn't perform action.");
+    } finally {
       setIsLoading(false);
-      toast.error("Couldn't perform action.")
     }
   };
 
@@ -99,7 +116,6 @@ const ViewTeacherAttendancebyTeacher = () => {
         onSubmit={getTeacherAttendance}
         className="flex gap-x-4 justify-around flex-row px-10 py-2"
       >
-        
         <select
           id="month"
           required
@@ -133,7 +149,7 @@ const ViewTeacherAttendancebyTeacher = () => {
             );
           })}
         </select>
-        <Button type="submit" className="overflow-visible">
+        <Button ripple={false} type="submit" className="overflow-visible">
           Submit
         </Button>
       </form>

@@ -9,7 +9,7 @@ type AttendanceJSON = {
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
-  if (!data || data.length==0)return <></>
+  if (!data || data.length == 0) return <></>;
   return (
     <div className="relative w-max py-5 px-5 flex flex-col h-full  text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
       <table className=" text-center table-auto ">
@@ -77,8 +77,8 @@ const ViewTeachersAttendancebyPrincipal = () => {
   const getTeacherAttendance = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (month == 0 || year == 0) {
-      if(!month)toast.error("Please select a month.")
-      if(!year)toast.error("Please select a year.")
+      if (!month) toast.error("Please select a month.");
+      if (!year) toast.error("Please select a year.");
       return;
     }
     try {
@@ -92,7 +92,6 @@ const ViewTeachersAttendancebyPrincipal = () => {
           year: years[year - 1],
         }),
       });
-      setIsLoading(false);
       const data = await response.json();
       if (data == null) toast.error("No record found.");
       else if (!data.message) {
@@ -100,8 +99,9 @@ const ViewTeachersAttendancebyPrincipal = () => {
         setAttendanceData(data);
       } else toast.error(data.message);
     } catch (error) {
+      toast.error("Couldn't perform action.");
+    } finally {
       setIsLoading(false);
-      toast.error("Couldn't perform action.")
     }
   };
 
@@ -162,7 +162,7 @@ const ViewTeachersAttendancebyPrincipal = () => {
             );
           })}
         </select>
-        <Button type="submit" className="overflow-visible">
+        <Button ripple={false} type="submit">
           Submit
         </Button>
       </form>

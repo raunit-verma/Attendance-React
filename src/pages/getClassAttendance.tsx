@@ -83,7 +83,6 @@ const GetClassAttendance = () => {
           year: years[year-1],
         }),
       });
-      setIsLoading(false);
       const data = await response.json();
       if (data == null) toast.error("No record found.");
       else if (!data.message) {
@@ -91,8 +90,9 @@ const GetClassAttendance = () => {
         setAttendanceData(data);
       } else toast.error(data.message);
     } catch (error) {
-      setIsLoading(false);
       toast.error("Couldn't perform action.")
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -176,7 +176,7 @@ const GetClassAttendance = () => {
             );
           })}
         </select>
-        <Button type="submit" className="overflow-visible">
+        <Button ripple={false} type="submit" className="overflow-visible">
           Submit
         </Button>
       </form>
