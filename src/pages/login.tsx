@@ -17,7 +17,7 @@ export function Login() {
   const [loading, setIsLoading] = useState(false);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.id == "username"
+    e.target.id === "username"
       ? setUsername(e.target.value)
       : setPassword(e.target.value);
   };
@@ -35,10 +35,10 @@ export function Login() {
         }),
       });
       const data = await response.json();
-      if (data.message == undefined) {
+      if (data.message === undefined) {
         navigate("/");
       } else {
-        if (response.status == 401) {
+        if (response.status === 401) {
           toast.error("Wrong username or password.");
         } else {
           toast.error("Some error occured.");

@@ -11,7 +11,7 @@ const PrivateRoute = () => {
 
 const PrivateRouteTeacher = () =>{
   const user =  JSON.parse(getUser())
-  return  user.role == "teacher" ? (
+  return  user.role === "teacher" ? (
     <Outlet/>
   ) : (
     <Navigate to="/" replace />
@@ -20,7 +20,7 @@ const PrivateRouteTeacher = () =>{
 
 const PrivateRouteStudent = () =>{
   const user =  JSON.parse(getUser())
-  return  user.role == "student" ? (
+  return  user.role === "student" ? (
     <Outlet/>
   ) : (
     <Navigate to="/" replace />
@@ -29,7 +29,7 @@ const PrivateRouteStudent = () =>{
 
 const PrivateRoutePrincipal = () => {
   const user =  JSON.parse(getUser())
-  return  user.role == "principal" ? (
+  return  user.role === "principal" ? (
     <Outlet/>
   ) : (
     <Navigate to="/" replace />

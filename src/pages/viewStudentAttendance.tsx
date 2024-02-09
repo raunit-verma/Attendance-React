@@ -8,7 +8,7 @@ type AttendanceJSON = {
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
-  if (!data || data.length == 0) return <></>;
+  if (!data || data.length === 0) return <></>;
   return (
     <div className="relative w-max py-5 px-5 flex flex-col h-full  text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
       <table className=" text-center table-auto ">
@@ -73,8 +73,8 @@ const ViewStudentAttendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const getTeacherAttendance = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (month == 0 || year == 0) {
-      month == 0
+    if (month === 0 || year === 0) {
+      month === 0
         ? toast.error("Please select a month.")
         : toast.error("Please select a year.");
       return;

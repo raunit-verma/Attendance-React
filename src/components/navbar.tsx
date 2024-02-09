@@ -1,7 +1,6 @@
 import {
   Bars3Icon,
-  ChevronDownIcon,
-  XMarkIcon,
+  XMarkIcon
 } from "@heroicons/react/24/outline";
 import {
   Button,
@@ -9,17 +8,12 @@ import {
   IconButton,
   List,
   ListItem,
-  Menu,
-  MenuHandler,
-  MenuItem,
-  MenuList,
   Navbar,
-  Typography,
+  Typography
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import { SquaresPlusIcon } from "@heroicons/react/24/solid";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { API_URL, getUser } from "../util";
@@ -30,13 +24,6 @@ type NavListItem = {
   path: string;
 };
 
-const navListMenuItems = [
-  {
-    title: "Products",
-    description: "Find the perfect solution for your needs.",
-    icon: SquaresPlusIcon,
-  },
-];
 
 const navListStudent = [
   {
@@ -78,85 +65,6 @@ const navListPrincipal = [
     path: "/getTeachersAttendance",
   },
 ];
-
-function NavListMenu() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const renderItems = navListMenuItems.map(
-    ({ icon, title, description }, key) => (
-      <a href="#" key={key}>
-        <MenuItem className="flex items-center gap-3 rounded-lg">
-          <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2 ">
-            {" "}
-            {React.createElement(icon, {
-              strokeWidth: 2,
-              className: "h-6 text-gray-900 w-6",
-            })}
-          </div>
-          <div>
-            <Typography
-              variant="h6"
-              color="blue-gray"
-              className="flex items-center text-sm font-bold"
-            >
-              {title}
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="text-xs !font-medium text-blue-gray-500"
-            >
-              {description}
-            </Typography>
-          </div>
-        </MenuItem>
-      </a>
-    )
-  );
-
-  return (
-    <React.Fragment>
-      <Menu
-        open={isMenuOpen}
-        handler={setIsMenuOpen}
-        offset={{ mainAxis: 20 }}
-        placement="bottom"
-        allowHover={true}
-      >
-        <MenuHandler>
-          <Typography as="div" variant="small" className="font-medium">
-            <ListItem
-              className="flex items-center gap-2 py-2 pr-4 font-medium text-gray-900"
-              selected={isMenuOpen || isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen((cur) => !cur)}
-            >
-              Resources
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`hidden h-3 w-3 transition-transform lg:block ${
-                  isMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`block h-3 w-3 transition-transform lg:hidden ${
-                  isMobileMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-            </ListItem>
-          </Typography>
-        </MenuHandler>
-        <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
-          <ul className="grid grid-cols-3 gap-y-2 outline-none outline-0">
-            {renderItems}
-          </ul>
-        </MenuList>
-      </Menu>
-      <div className="block lg:hidden">
-        <Collapse open={isMobileMenuOpen}>{renderItems}</Collapse>
-      </div>
-    </React.Fragment>
-  );
-}
 
 function NavList({ navBarList }: { navBarList: NavListItem[] }) {
   const data = navBarList;
@@ -220,9 +128,9 @@ export function StickyNavbar() {
   const user = JSON.parse(getUser());
   const [status, setStatus] = useState(false);
   let navList: NavListItem[] = [];
-  if (user.role == "student") navList = navListStudent;
-  else if (user.role == "teacher") navList = navListTeacher;
-  else if (user.role == "principal") navList = navListPrincipal;
+  if (user.role === "student") navList = navListStudent;
+  else if (user.role === "teacher") navList = navListTeacher;
+  else if (user.role === "principal") navList = navListPrincipal;
 
   const logoutFn = () => {
     Cookies.remove("Authorization", { path: "/", domain: "localhost" });
@@ -252,7 +160,7 @@ export function StickyNavbar() {
         })
         .then((data: any) => {
           console.log(data);
-          if (data.code == 8) toast.success(data.message);
+          if (data.code === 8) toast.success(data.message);
           else toast.error(data.message);
           fetchStatus();
         }).catch(()=>{

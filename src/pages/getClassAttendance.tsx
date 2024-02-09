@@ -9,7 +9,7 @@ type AttendanceJSON = {
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
-  if (!data || data.length==0)return <></>
+  if (!data || data.length===0)return <></>
   return (
     <div className="relative w-max py-5 px-5 flex flex-col h-full  text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
       <table className=" text-center table-auto ">
@@ -64,7 +64,7 @@ const GetClassAttendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const getTeacherAttendance = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(month==0 || year==0 || day==0 || classs==0){
+    if(month===0 || year===0 || day===0 || classs===0){
       if(!month)toast.error("Please select a month.")
       if(!year)toast.error("Please select a year.")
       if(!day)toast.error("Please select a day.")
@@ -84,7 +84,7 @@ const GetClassAttendance = () => {
         }),
       });
       const data = await response.json();
-      if (data == null) toast.error("No record found.");
+      if (data === null) toast.error("No record found.");
       else if (!data.message) {
         toast.success("Record found.");
         setAttendanceData(data);
@@ -97,10 +97,10 @@ const GetClassAttendance = () => {
   };
 
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.id == "year") setYear(e.target.selectedIndex);
-    else if (e.target.id == "month") setMonth(e.target.selectedIndex);
-    else if(e.target.id == "date")setDay(parseInt(e.target.value))
-    else if(e.target.id == "class")setClasss(parseInt(e.target.value))
+    if (e.target.id === "year") setYear(e.target.selectedIndex);
+    else if (e.target.id === "month") setMonth(e.target.selectedIndex);
+    else if(e.target.id === "date")setDay(parseInt(e.target.value))
+    else if(e.target.id === "class")setClasss(parseInt(e.target.value))
   };
 
   return (
