@@ -133,7 +133,7 @@ export function StickyNavbar() {
   else if (user.role === "principal") navList = navListPrincipal;
 
   const logoutFn = () => {
-    Cookies.remove("Authorization", { path: "/", domain: "localhost" });
+    Cookies.remove("Authorization", { path: "/", domain: process.env.REACT_APP_DOMAIN });
     navigate("/login");
   };
 
