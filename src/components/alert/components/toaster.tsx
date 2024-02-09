@@ -10,7 +10,7 @@ import { Toast } from './toast';
  */
 const Toaster = ({
   position = 'bottom-right',
-  duration = 5000,
+  duration = 3000,
   reverse = false,
   theme = 'light',
   style,

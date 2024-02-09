@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { ToastProps } from '../core/types';
-import '../core/styles.css';
-import { ErrorIcon, LoadingIcon, SuccessIcon } from './assets';
 import { Alert } from '@material-tailwind/react';
+import React from 'react';
+import '../core/styles.css';
+import { ToastProps } from '../core/types';
+import { ErrorIcon, SuccessIcon } from './assets';
 const Toast = ({ toast }: ToastProps) => {
   
   const [open, setOpen] = React.useState(true);

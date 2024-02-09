@@ -44,7 +44,8 @@ import { API_URL, getAuthenticationStatus } from "../util";
                 }
             }
         } catch(error){
-            console.log(error)
+          setIsLoading(false)
+          toast.error("Couldn't perform action.")
         }
         
     }

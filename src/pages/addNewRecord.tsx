@@ -1,14 +1,13 @@
 import {
-  Alert,
   Button,
   Card,
   Input,
   Radio,
   Spinner,
-  Typography,
+  Typography
 } from "@material-tailwind/react";
-import { toast } from "../components/alert";
 import { useEffect, useState } from "react";
+import { toast } from "../components/alert";
 import { API_URL } from "../util";
 
 export function AddNewEntry() {
@@ -67,7 +66,7 @@ export function AddNewEntry() {
       }, 500);
       
     } catch (error) {
-      console.log(error);
+      toast.error("Couldn't add user.")
     }
   };
 

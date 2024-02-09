@@ -1,29 +1,29 @@
-import React, { useEffect, useReducer, useState } from "react";
-import { useLocation } from "react-router-dom";
 import {
-  Navbar,
-  Collapse,
-  Typography,
+  Bars3Icon,
+  ChevronDownIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import {
   Button,
+  Collapse,
   IconButton,
   List,
   ListItem,
   Menu,
   MenuHandler,
-  MenuList,
   MenuItem,
+  MenuList,
+  Navbar,
+  Typography,
 } from "@material-tailwind/react";
-import {
-  ChevronDownIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { SquaresPlusIcon } from "@heroicons/react/24/solid";
-import { toast } from "./alert";
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { API_URL, getUser } from "../util";
-import Cookies from "js-cookie";
+import { toast } from "./alert";
 
 type NavListItem = {
   title: string;
@@ -46,7 +46,7 @@ const navListStudent = [
   {
     title: "My Attendance",
     path: "/getStudentAttendance",
-  }
+  },
 ];
 
 const navListTeacher = [
@@ -211,8 +211,7 @@ function NavList({ navBarList }: { navBarList: NavListItem[] }) {
 
 export function StickyNavbar() {
   const location = useLocation();
-  const excludeStickyNavbar = location.pathname === '/login';
-
+  const excludeStickyNavbar = location.pathname === "/login";
 
   const [pageTitle, setPageTitle] = useState("Login");
   const [loginLogoutButton, setLoginLogoutButton] = useState("Log In");
@@ -220,10 +219,10 @@ export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
   const user = JSON.parse(getUser());
   const [status, setStatus] = useState(false);
-  let navList:NavListItem[] = []
-  if(user.role == "student") navList = navListStudent
-  else if(user.role == "teacher") navList = navListTeacher
-  else if(user.role == "principal") navList = navListPrincipal
+  let navList: NavListItem[] = [];
+  if (user.role == "student") navList = navListStudent;
+  else if (user.role == "teacher") navList = navListTeacher;
+  else if (user.role == "principal") navList = navListPrincipal;
 
   const logoutFn = () => {
     Cookies.remove("Authorization", { path: "/", domain: "localhost" });
@@ -231,32 +230,39 @@ export function StickyNavbar() {
   };
 
   const fetchStatus = async () => {
-    const response = await fetch(API_URL + "/fetchstatus", {
-      credentials: "include",
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setStatus(data.status);
+    try {
+      const response = await fetch(API_URL + "/fetchstatus", {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setStatus(data.status);
+      }
+    } catch (e: any) {
+      if (user.role != "principal") toast.error("Cannot find current status.");
     }
   };
 
   const punchInOutFn = async () => {
-    fetch(API_URL + (status ? "/punchout" : "/punchin"), {
-      credentials: "include",
-    })
-    .then((response)=>{
-      return response.json();
-    }).then((data:any)=>{
-      console.log(data);
-      if(data.code==8)toast.success(data.message);
-      else toast.error(data.message);
-      fetchStatus();
-    })
+      fetch(API_URL + (status ? "/punchout" : "/punchin"), {
+        credentials: "include",
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data: any) => {
+          console.log(data);
+          if (data.code == 8) toast.success(data.message);
+          else toast.error(data.message);
+          fetchStatus();
+        }).catch(()=>{
+          toast.error("Couldn't perform action.")
+        })
   };
 
   useEffect(() => {
     const username = user.username;
-    if (username != undefined && user.role!="principal") {
+    if (username != undefined && user.role != "principal") {
       fetchStatus();
     }
 
@@ -283,7 +289,7 @@ export function StickyNavbar() {
   }, []);
 
   if (excludeStickyNavbar) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -299,9 +305,7 @@ export function StickyNavbar() {
           {pageTitle}
         </Typography>
         <div className="hidden lg:block">
-          <NavList
-            navBarList={navList}
-          />
+          <NavList navBarList={navList} />
         </div>
         <div className="flex items-center flex-row ">
           <Typography
@@ -348,9 +352,7 @@ export function StickyNavbar() {
       </div>
 
       <Collapse open={openNav}>
-        <NavList
-          navBarList={navList}
-        />
+        <NavList navBarList={navList} />
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
           <Button onClick={logoutFn} variant="gradient" size="sm" fullWidth>
             {loginLogoutButton}

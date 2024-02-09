@@ -98,7 +98,8 @@ const ViewStudentAttendance = () => {
         setAttendanceData(data);
       } else toast.error(data.message);
     } catch (error) {
-      console.log(error);
+      setIsLoading(false);
+      toast.error("Couldn't perform action.")
     }
   };
 
