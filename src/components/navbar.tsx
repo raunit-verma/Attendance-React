@@ -262,6 +262,16 @@ export function StickyNavbar() {
       <Collapse open={openNav}>
         <NavList navBarList={navList} />
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+        {user.role && user.role != "principal" && (
+              <Button
+                variant="gradient"
+                color={status ? "green" : "red"}
+                onClick={punchInOutFn}
+                size="sm"
+              >
+                {status ? "Punch Out" : "Punch In"}
+              </Button>
+            )}
           <Button onClick={logoutFn} variant="gradient" size="sm" fullWidth>
             {loginLogoutButton}
           </Button>
