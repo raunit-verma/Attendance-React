@@ -2,7 +2,7 @@ import { Button, Spinner } from "@material-tailwind/react";
 import { useState } from "react";
 import { toast } from "../components/alert";
 import { API_URL, formateDateTime, getUser } from "../util";
-
+import { useEffect } from "react";
 type AttendanceJSON = {
   PunchInDate: string;
   PunchOutDate: string;
@@ -104,7 +104,19 @@ const ViewTeacherAttendancebyTeacher = () => {
       setIsLoading(false);
     }
   };
+  const [flex, setFlex] = useState("flex-row");
+  useEffect(() => {
+    const handleSize = () => {
+      if (window.innerWidth <= 800) {
+        setFlex("flex-col gap-y-2");
+        console.log(flex);
+      } else setFlex("flex-row");
+    };
+    window.addEventListener("resize", handleSize);
 
+    handleSize();
+    
+  }, []);
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.id == "year") setYear(e.target.selectedIndex);
     else if (e.target.id == "month") setMonth(e.target.selectedIndex);
@@ -114,7 +126,7 @@ const ViewTeacherAttendancebyTeacher = () => {
     <div>
       <form
         onSubmit={getTeacherAttendance}
-        className="flex gap-x-4 justify-around flex-row px-10 py-2"
+        className={`flex gap-x-4 justify-around ${flex} px-10 py-2`}
       >
         <select
           id="month"

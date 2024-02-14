@@ -37,6 +37,7 @@ export function AddNewEntry() {
       });
     }
   };
+  
 
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
