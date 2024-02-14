@@ -43,7 +43,7 @@
 
 .react-calendar__navigation {
     display: flex;
-    height: 44px;
+    height: 3rem;
     margin-bottom: 1em;
 }
 
@@ -135,4 +135,5 @@
 
 .absent-date {
     background-color: #FF0000;
+    border-top-width: 1px;
 }
