@@ -9,14 +9,12 @@ const getUser = () =>{
 }
 
 const getAuthenticationStatus = () =>{
-  console.log(Cookies.get('Authorization'))
   return Cookies.get('Authorization')!=undefined
 }
 
 function formateDateTime(dateTimeString: string) {
   if (dateTimeString === "0001-01-01T00:00:00Z" )return "Didn't punch out."
  const inputDate = new Date(dateTimeString);
-
  const options: Intl.DateTimeFormatOptions = {
    weekday : "short",
    year: "numeric",
@@ -26,11 +24,10 @@ function formateDateTime(dateTimeString: string) {
    minute: "numeric",
    second:'2-digit',
    hour12: true,
-   timeZone: 'UTC',
  };
-
  return inputDate.toLocaleDateString("en-US", options)
 }
 
 
-export { API_URL, getUser, getAuthenticationStatus, formateDateTime }
+export { API_URL, formateDateTime, getAuthenticationStatus, getUser };
+

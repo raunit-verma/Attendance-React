@@ -79,7 +79,7 @@ function NavList({ navBarList }: { navBarList: NavListItem[] }) {
             key={path}
             variant="h6"
             color="blue-gray"
-            className="font-medium"
+            className="font-medium bg-gray-100"
           >
             <ListItem
               onClick={() => {
@@ -174,8 +174,8 @@ export function StickyNavbar() {
       fetchStatus();
     }
 
-    const currentPath = window.location.pathname;
-
+    const currentPath = window.location.pathname.replace(/#/g, '');
+    
     currentPath != "/login"
       ? setLoginLogoutButton("Log Out")
       : setLoginLogoutButton("Log In");
@@ -185,7 +185,7 @@ export function StickyNavbar() {
     } else if (currentPath === "/addNewEntry") {
       setPageTitle("Add New Entry");
     } else {
-      setPageTitle("Home");
+      setPageTitle("Other Route");
     }
   }, [navigate]);
 
@@ -267,7 +267,7 @@ export function StickyNavbar() {
                 variant="gradient"
                 color={status ? "green" : "red"}
                 onClick={punchInOutFn}
-                size="sm"
+                size="sm" fullWidth
               >
                 {status ? "Punch Out" : "Punch In"}
               </Button>

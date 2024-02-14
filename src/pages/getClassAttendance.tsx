@@ -1,5 +1,5 @@
 import { Button, Spinner } from "@material-tailwind/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "../components/alert";
 import { API_URL } from "../util";
 
@@ -9,7 +9,7 @@ type AttendanceJSON = {
 };
 
 const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
-  if (!data || data.length===0)return <></>
+  if (!data || data.length === 0) return <></>;
   return (
     <div className="relative w-max py-5 px-5 flex flex-col h-full  text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
       <table className=" text-center table-auto ">
@@ -28,22 +28,23 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
           </tr>
         </thead>
         <tbody>
-          {data && data.map((val) => {
-            return (
-              <tr className="even:bg-blue-gray-50/50">
-                <td className="p-4">
-                  <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {val.Username}
-                  </p>
-                </td>
-                <td className="p-4">
-                  <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                    {val.FullName}
-                  </p>
-                </td>
-              </tr>
-            );
-          })}
+          {data &&
+            data.map((val) => {
+              return (
+                <tr className="even:bg-blue-gray-50/50">
+                  <td className="p-4">
+                    <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                      {val.Username}
+                    </p>
+                  </td>
+                  <td className="p-4">
+                    <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                      {val.FullName}
+                    </p>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
@@ -51,24 +52,40 @@ const AttendanceTable = ({ data }: { data: AttendanceJSON[] }) => {
 };
 
 const GetClassAttendance = () => {
-  const months = ["Janurary", "February","March","April","May","June","July","August","September","October","November","December"];
-  const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
-  const dates:number[] = [];
+  const months = [
+    "Janurary",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const years = [
+    2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030,
+  ];
+  const dates: number[] = [];
   for (let i = 1; i <= 31; i++) dates.push(i);
-  const classes = [1,2,3,4,5,6,7,8,9,10]
+  const classes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(0);
-  const [day,setDay] = useState(0);
-  const [classs,setClasss] = useState(0);
+  const [day, setDay] = useState(0);
+  const [classs, setClasss] = useState(0);
   const [loading, setIsLoading] = useState(false);
+  const [flex, setFlex] = useState("flex-row");
   const [attendanceData, setAttendanceData] = useState([]);
   const getTeacherAttendance = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(month===0 || year===0 || day===0 || classs===0){
-      if(!month)toast.error("Please select a month.")
-      if(!year)toast.error("Please select a year.")
-      if(!day)toast.error("Please select a day.")
-      if(!classs)toast.error("Please select a class.")
+    if (month === 0 || year === 0 || day === 0 || classs === 0) {
+      if (!month) toast.error("Please select a month.");
+      if (!year) toast.error("Please select a year.");
+      if (!day) toast.error("Please select a day.");
+      if (!classs) toast.error("Please select a class.");
       return;
     }
     try {
@@ -77,10 +94,10 @@ const GetClassAttendance = () => {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({
-          class:classes[classs-1],
-          day:dates[day-1],
+          class: classes[classs - 1],
+          day: dates[day - 1],
           month: month,
-          year: years[year-1],
+          year: years[year - 1],
         }),
       });
       const data = await response.json();
@@ -90,7 +107,7 @@ const GetClassAttendance = () => {
         setAttendanceData(data);
       } else toast.error(data.message);
     } catch (error) {
-      toast.error("Couldn't perform action.")
+      toast.error("Couldn't perform action.");
     } finally {
       setIsLoading(false);
     }
@@ -99,15 +116,28 @@ const GetClassAttendance = () => {
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.id === "year") setYear(e.target.selectedIndex);
     else if (e.target.id === "month") setMonth(e.target.selectedIndex);
-    else if(e.target.id === "date")setDay(parseInt(e.target.value))
-    else if(e.target.id === "class")setClasss(parseInt(e.target.value))
+    else if (e.target.id === "date") setDay(parseInt(e.target.value));
+    else if (e.target.id === "class") setClasss(parseInt(e.target.value));
   };
+
+  useEffect(() => {
+    const handleSize = () => {
+      if (window.innerWidth <= 800) {
+        setFlex("flex-col gap-y-2");
+        console.log(flex);
+      } else setFlex("flex-row");
+    };
+    window.addEventListener("resize", handleSize);
+
+    handleSize();
+    
+  }, []);
 
   return (
     <div>
       <form
         onSubmit={getTeacherAttendance}
-        className="flex gap-x-4 justify-around flex-row px-10 py-2"
+        className={`flex gap-x-4 ${flex} justify-around px-4 py-2`}
       >
         <select
           id="class"
@@ -142,7 +172,7 @@ const GetClassAttendance = () => {
             );
           })}
         </select>
-        
+
         <select
           id="month"
           required
