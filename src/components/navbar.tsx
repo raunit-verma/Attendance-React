@@ -146,7 +146,7 @@ export function StickyNavbar() {
         setStatus(data.status);
       }
     } catch (e: any) {
-      if (user.role != "principal") toast.error("Cannot find current status.");
+      if (user.role !== "principal") toast.error("Cannot find current status.");
     }
   };
 
@@ -170,13 +170,13 @@ export function StickyNavbar() {
 
   useEffect(() => {
     const username = user.username;
-    if (username != undefined && user.role != "principal") {
+    if (username !== undefined && user.role !== "principal") {
       fetchStatus();
     }
 
     const currentPath = window.location.pathname.replace(/#/g, "");
     console.log(currentPath)
-    currentPath != "/login"
+    currentPath !== "/login"
       ? setLoginLogoutButton("Log Out")
       : setLoginLogoutButton("Log In");
 
@@ -237,7 +237,7 @@ export function StickyNavbar() {
             {/* <Button variant="text" size="sm" color="blue-gray">
             Log In
           </Button> */}
-            {user.role && user.role != "principal" && (
+            {user.role && user.role !== "principal" && (
               <Button
                 variant="gradient"
                 color={status ? "green" : "red"}
@@ -270,7 +270,7 @@ export function StickyNavbar() {
       <Collapse open={openNav}>
         <NavList navBarList={navList} />
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          {user.role && user.role != "principal" && (
+          {user.role && user.role !== "principal" && (
             <Button
               variant="gradient"
               color={status ? "green" : "red"}

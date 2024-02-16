@@ -16,19 +16,8 @@ import { Login } from "./pages/login";
 import ViewStudentAttendance from "./pages/viewStudentAttendance";
 import ViewTeacherAttendancebyTeacher from "./pages/viewTeacherAttendance";
 import ViewTeachersAttendancebyPrincipal from "./pages/viewTeachersAttendance";
-import { useEffect } from "react";
 
 function App() {
-  useEffect(() => {
-
-    const favicon: HTMLLinkElement | null =
-      document.querySelector('link[rel="icon"]');
-    if (favicon) {
-      favicon.href = "https://6866519.fs1.hubspotusercontent-na1.net/hub/6866519/hubfs/ic-devtron-logo-blue.png?width=108&height=108";
-    }
-
-    document.title = "Attendance App";
-  }, []);
 
   return (
     <div className="App">
