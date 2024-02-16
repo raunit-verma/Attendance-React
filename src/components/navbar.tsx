@@ -1,7 +1,4 @@
-import {
-  Bars3Icon,
-  XMarkIcon
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   Button,
   Collapse,
@@ -9,7 +6,7 @@ import {
   List,
   ListItem,
   Navbar,
-  Typography
+  Typography,
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -24,7 +21,6 @@ type NavListItem = {
   path: string;
 };
 
-
 const navListStudent = [
   {
     title: "Home",
@@ -32,7 +28,7 @@ const navListStudent = [
   },
   {
     title: "My Attendance",
-    path: "/getStudentAttendance",
+    path: "/getstudentattendance",
   },
 ];
 
@@ -43,11 +39,11 @@ const navListTeacher = [
   },
   {
     title: "My Attendance",
-    path: "/getTeacherAttendance",
+    path: "/getteacherattendance",
   },
   {
     title: "Get Class Attendance",
-    path: "/getClassAttendance",
+    path: "/getclassattendance",
   },
 ];
 
@@ -58,11 +54,11 @@ const navListPrincipal = [
   },
   {
     title: "Add New",
-    path: "/addNewEntry",
+    path: "/addnewentry",
   },
   {
     title: "Get Teacher Attendance",
-    path: "/getTeachersAttendance",
+    path: "/getteachersattendance",
   },
 ];
 
@@ -133,7 +129,10 @@ export function StickyNavbar() {
   else if (user.role === "principal") navList = navListPrincipal;
 
   const logoutFn = () => {
-    Cookies.remove("Authorization", { path: "/", domain: process.env.REACT_APP_DOMAIN });
+    Cookies.remove("Authorization", {
+      path: "/",
+      domain: process.env.REACT_APP_DOMAIN,
+    });
     navigate("/login");
   };
 
@@ -152,20 +151,21 @@ export function StickyNavbar() {
   };
 
   const punchInOutFn = async () => {
-      fetch(API_URL + (status ? "/punchout" : "/punchin"), {
-        credentials: "include",
+    fetch(API_URL + (status ? "/punchout" : "/punchin"), {
+      credentials: "include",
+    })
+      .then((response) => {
+        return response.json();
       })
-        .then((response) => {
-          return response.json();
-        })
-        .then((data: any) => {
-          console.log(data);
-          if (data.code === 8) toast.success(data.message);
-          else toast.error(data.message);
-          fetchStatus();
-        }).catch(()=>{
-          toast.error("Couldn't perform action.")
-        })
+      .then((data: any) => {
+        console.log(data);
+        if (data.code === 8) toast.success(data.message);
+        else toast.error(data.message);
+        fetchStatus();
+      })
+      .catch(() => {
+        toast.error("Couldn't perform action.");
+      });
   };
 
   useEffect(() => {
@@ -174,17 +174,25 @@ export function StickyNavbar() {
       fetchStatus();
     }
 
-    const currentPath = window.location.pathname.replace(/#/g, '');
-    
+    const currentPath = window.location.pathname.replace(/#/g, "");
+    console.log(currentPath)
     currentPath != "/login"
       ? setLoginLogoutButton("Log Out")
       : setLoginLogoutButton("Log In");
 
-    if (currentPath === "/login") {
-      setPageTitle("Login");
-    } else if (currentPath === "/addNewEntry") {
-      setPageTitle("Add New Entry");
-    } else {
+    if (currentPath === "/login") setPageTitle("Login");
+    else if (currentPath === "/addNewEntry") setPageTitle("Add New Entry");
+    else if (currentPath === "/") setPageTitle("Home");
+    else if (currentPath === "/addnewentry") setPageTitle("Add New User");
+    else if (currentPath === "/getteachersattendance")
+      setPageTitle("Teachers Attendance");
+    else if (currentPath === "/getteacherattendance")
+      setPageTitle("My Attendance");
+    else if (currentPath === "/getclassattendance")
+      setPageTitle("Class Attendance");
+    else if (currentPath === "/getstudentattendance")
+      setPageTitle("My Attendance");
+    else {
       setPageTitle("Other Route");
     }
   }, [navigate]);
@@ -262,16 +270,17 @@ export function StickyNavbar() {
       <Collapse open={openNav}>
         <NavList navBarList={navList} />
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-        {user.role && user.role != "principal" && (
-              <Button
-                variant="gradient"
-                color={status ? "green" : "red"}
-                onClick={punchInOutFn}
-                size="sm" fullWidth
-              >
-                {status ? "Punch Out" : "Punch In"}
-              </Button>
-            )}
+          {user.role && user.role != "principal" && (
+            <Button
+              variant="gradient"
+              color={status ? "green" : "red"}
+              onClick={punchInOutFn}
+              size="sm"
+              fullWidth
+            >
+              {status ? "Punch Out" : "Punch In"}
+            </Button>
+          )}
           <Button onClick={logoutFn} variant="gradient" size="sm" fullWidth>
             {loginLogoutButton}
           </Button>
