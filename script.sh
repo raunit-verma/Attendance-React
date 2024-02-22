@@ -7,4 +7,6 @@ done
 
 npm run build --production
 
+npm install -g serve
+
 serve -s build
