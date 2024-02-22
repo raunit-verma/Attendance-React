@@ -18,7 +18,7 @@ import ViewStudentAttendance from "./pages/viewStudentAttendance";
 import ViewTeacherAttendancebyTeacher from "./pages/viewTeacherAttendance";
 import ViewTeachersAttendancebyPrincipal from "./pages/viewTeachersAttendance";
 function App() {
-
+  
   return (
     <div className="App">
       <Toaster position="top-center" />

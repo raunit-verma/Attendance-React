@@ -200,7 +200,7 @@ export function StickyNavbar() {
     );
   });
 
-  if (excludeStickyNavbar) {
+  if (excludeStickyNavbar || !user.role) {
     return <></>;
   }
 
