@@ -5,7 +5,7 @@ do
     echo '$var=${!var}' >> .env
 done
 
-npm run build --production
+npm run build
 
 npm install -g serve
 
