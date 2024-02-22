@@ -6,12 +6,8 @@ WORKDIR /app
 
 RUN npm install
 
-RUN npm run build --production
+RUN chmod +x script.sh
 
-RUN npm install -g serve
-
-# CMD [ "npm","run","start" ]
-
-CMD serve -s build
+CMD ./script.sh
 
 EXPOSE 3000
