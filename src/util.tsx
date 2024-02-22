@@ -9,7 +9,7 @@ const getUser = () =>{
 }
 
 const getAuthenticationStatus = () =>{
-  return Cookies.get('Authorization')!=undefined
+  return Cookies.get('Authorization')!==undefined
 }
 
 function formateDateTime(dateTimeString: string) {

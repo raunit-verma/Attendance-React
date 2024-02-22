@@ -8,11 +8,9 @@ import {
   Navbar,
   Typography,
 } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import env from "react-dotenv";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL, getUser } from "../util";
 import { toast } from "./alert";
 
@@ -158,7 +156,6 @@ export function StickyNavbar() {
         return response.json();
       })
       .then((data: any) => {
-        console.log(data);
         if (data.code === 8) toast.success(data.message);
         else toast.error(data.message);
         fetchStatus();
@@ -175,7 +172,6 @@ export function StickyNavbar() {
     }
 
     const currentPath = window.location.pathname.replace(/#/g, "");
-    console.log(currentPath)
     currentPath !== "/login"
       ? setLoginLogoutButton("Log Out")
       : setLoginLogoutButton("Log In");
@@ -195,14 +191,14 @@ export function StickyNavbar() {
     else {
       setPageTitle("Other Route");
     }
-  }, [navigate]);
+  },[]);
 
   React.useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
-  }, []);
+  });
 
   if (excludeStickyNavbar) {
     return <></>;

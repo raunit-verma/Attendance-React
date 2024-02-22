@@ -124,7 +124,6 @@ const GetClassAttendance = () => {
     const handleSize = () => {
       if (window.innerWidth <= 800) {
         setFlex("flex-col gap-y-2");
-        console.log(flex);
       } else setFlex("flex-row");
     };
     window.addEventListener("resize", handleSize);

@@ -110,7 +110,6 @@ const ViewStudentAttendance = () => {
     const handleSize = () => {
       if (window.innerWidth <= 800) {
         setFlex("flex-col gap-y-2");
-        console.log(flex);
       } else setFlex("flex-row");
     };
     window.addEventListener("resize", handleSize);
@@ -120,8 +119,8 @@ const ViewStudentAttendance = () => {
   }, []);
 
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.id == "year") setYear(e.target.selectedIndex);
-    else if (e.target.id == "month") setMonth(e.target.selectedIndex);
+    if (e.target.id === "year") setYear(e.target.selectedIndex);
+    else if (e.target.id === "month") setMonth(e.target.selectedIndex);
   };
 
   return (
