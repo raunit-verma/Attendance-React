@@ -4,7 +4,7 @@ import {
   Input,
   Radio,
   Spinner,
-  Typography
+  Typography,
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { toast } from "../components/alert";
@@ -15,9 +15,9 @@ export function AddNewEntry() {
     username: "",
     password: "",
     fullname: "",
-    class: 1,
+    class: -1,
     email: "",
-    role: "student",
+    role: "teacher",
   });
   const [loading, setIsLoading] = useState(false);
   const studentClass = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
@@ -37,7 +37,6 @@ export function AddNewEntry() {
       });
     }
   };
-  
 
   const onDropDownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setNewUser((prevUser) => {
@@ -50,26 +49,30 @@ export function AddNewEntry() {
     e.preventDefault();
     try {
       setIsLoading(true);
+      if (newUser.role == "teacher") newUser.class = 1;
       const response = await fetch(API_URL + "/addnewuser", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify(newUser),
       });
       const data = await response.json();
-      setTimeout(() => {
-        if(!data.message || data.code===8){
-          toast.success("User added successfully.")
-        } else {
-          toast.error(data.message)
-        }
-      }, 500);
-      
+      if (!data.message || data.code === 8) {
+        toast.success("User added successfully.");
+        setNewUser({
+          username: "",
+          password: "",
+          fullname: "",
+          class: -1,
+          email: "",
+          role: "teacher",
+        });
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
-      toast.error("Couldn't add user.")
+      toast.error("Couldn't add user.");
     } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 450);
+      setIsLoading(false);
     }
   };
 
@@ -98,6 +101,7 @@ export function AddNewEntry() {
               size="lg"
               required
               onChange={onInputChange}
+              value={newUser.username}
               placeholder="username"
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
@@ -111,6 +115,7 @@ export function AddNewEntry() {
               id="password"
               type="password"
               required
+              value={newUser.password}
               onChange={onInputChange}
               size="lg"
               placeholder="********"
@@ -129,6 +134,7 @@ export function AddNewEntry() {
               onChange={onInputChange}
               size="lg"
               required
+              value={newUser.fullname}
               placeholder="name"
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
@@ -144,6 +150,7 @@ export function AddNewEntry() {
               type="email"
               onChange={onInputChange}
               size="lg"
+              value={newUser.email}
               placeholder="email@devtron.ai"
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
@@ -156,6 +163,7 @@ export function AddNewEntry() {
                 id="role-teacher"
                 name="type"
                 label="Teacher"
+                defaultChecked
                 onChange={onInputChange}
               />
               <Radio
@@ -163,27 +171,25 @@ export function AddNewEntry() {
                 name="type"
                 label="Student"
                 onChange={onInputChange}
-                defaultChecked
               />
             </div>
             <div>
-            {
-              newUser.role === "student" && <select
-              id="class"
-              onChange={onDropDownChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
-              <option selected>Choose a Class</option>
-              {studentClass.map((myClass) => {
-                return (
-                  <option key={myClass} value={myClass}>
-                    {myClass}
-                  </option>
-                );
-              })}
-            </select>
-            }
-              
+              {newUser.role === "student" && (
+                <select
+                  id="class"
+                  onChange={onDropDownChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option selected>Choose a Class</option>
+                  {studentClass.map((myClass) => {
+                    return (
+                      <option key={myClass} value={myClass}>
+                        {myClass}
+                      </option>
+                    );
+                  })}
+                </select>
+              )}
             </div>
           </div>
 
