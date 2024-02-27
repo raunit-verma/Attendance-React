@@ -8,37 +8,35 @@ To get started with the frontend project, follow these steps:
 
 1. Clone the repository to your local machine:
     ```bash
-    git clone https://github.com/raunit-verma/Attendance-React
-    ```
+    git clone https://github.com/raunit-verma/Attendance-React ```
 
-2. Navigate to the project directory:
-    ```bash
+2. Navigate to the project directory: ```bash
     cd Attendance-React
     ```
 
 3. Install all npm modules by running:
     ```bash
-    npm install
-    ```
+    npm install```
 
 4. Start the development server:
     ```bash
-    npm run start
-    ```
+    npm run start```
 
 This will start the development server, and you can view the application in your web browser by navigating to **http://localhost:3000**.
 
 ## Building the Project
 
 To build the project for production deployment, run:
+
 ```bash
 npm run build```
 
 To start in production:
+
 ```bash
 serve -s build```
 
-#### Dockerfile
+# Dockerfile
 The Dockerfile provided in this repository allows you to build a Docker image for the frontend component.
 
 #### Environment Variables
