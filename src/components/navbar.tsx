@@ -26,7 +26,7 @@ const navListStudent = [
   },
   {
     title: "My Attendance",
-    path: "/getstudentattendance",
+    path: "/student/attendance",
   },
 ];
 
@@ -37,11 +37,11 @@ const navListTeacher = [
   },
   {
     title: "My Attendance",
-    path: "/getteacherattendance",
+    path: "/teacher/attendance",
   },
   {
     title: "Get Class Attendance",
-    path: "/getclassattendance",
+    path: "/class/attendance",
   },
 ];
 
@@ -52,11 +52,11 @@ const navListPrincipal = [
   },
   {
     title: "Add New",
-    path: "/addnewentry",
+    path: "/user/add",
   },
   {
     title: "Get Teacher Attendance",
-    path: "/getteachersattendance",
+    path: "/teachers/attendance",
   },
 ];
 
@@ -149,7 +149,7 @@ export function StickyNavbar() {
   };
 
   const punchInOutFn = async () => {
-    fetch(API_URL + (status ? "/punchout" : "/punchin"), {
+    fetch(API_URL + (status ? "/punch/out" : "/punch/in"), {
       credentials: "include",
     })
       .then((response) => {
@@ -168,30 +168,28 @@ export function StickyNavbar() {
   useEffect(() => {
     const username = user.username;
     if (username !== undefined && user.role !== "principal") {
-      fetchStatus();
+      fetchStatus()
     }
-
     const currentPath = window.location.pathname.replace(/#/g, "");
     currentPath !== "/login"
       ? setLoginLogoutButton("Log Out")
       : setLoginLogoutButton("Log In");
 
     if (currentPath === "/login") setPageTitle("Login");
-    else if (currentPath === "/addNewEntry") setPageTitle("Add New Entry");
+    else if (currentPath === "/user/add") setPageTitle("Add New User");
     else if (currentPath === "/") setPageTitle("Home");
-    else if (currentPath === "/addnewentry") setPageTitle("Add New User");
-    else if (currentPath === "/getteachersattendance")
+    else if (currentPath === "/teachers/attendance")
       setPageTitle("Teachers Attendance");
-    else if (currentPath === "/getteacherattendance")
+    else if (currentPath === "/teacher/attendance")
       setPageTitle("My Attendance");
-    else if (currentPath === "/getclassattendance")
+    else if (currentPath === "/class/attendance")
       setPageTitle("Class Attendance");
-    else if (currentPath === "/getstudentattendance")
+    else if (currentPath === "/student/attendance")
       setPageTitle("My Attendance");
     else {
       setPageTitle("Other Route");
     }
-  },[]);
+  },[user]);
 
   React.useEffect(() => {
     window.addEventListener(

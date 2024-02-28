@@ -50,7 +50,7 @@ export function AddNewEntry() {
     try {
       setIsLoading(true);
       if (newUser.role == "teacher") newUser.class = 1;
-      const response = await fetch(API_URL + "/addnewuser", {
+      const response = await fetch(API_URL + "/user", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify(newUser),

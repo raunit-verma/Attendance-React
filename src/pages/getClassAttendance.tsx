@@ -90,7 +90,7 @@ const GetClassAttendance = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch(API_URL + "/getclassattendance", {
+      const response = await fetch(API_URL + "/class/attendance", {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({

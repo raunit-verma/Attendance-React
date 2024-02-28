@@ -30,25 +30,25 @@ function App() {
             <Route path="/" element={<Home />} />
           </Route>
           <Route element={<PrivateRoutePrincipal />}>
-            <Route path="/addnewentry" element={<AddNewEntry />} />
+            <Route path="/user/add" element={<AddNewEntry />} />
             <Route
-              path="/getteachersattendance"
+              path="/teachers/attendance"
               element={<ViewTeachersAttendancebyPrincipal />}
             />
           </Route>
           <Route element={<PrivateRouteTeacher />}>
             <Route
-              path="/getteacherattendance"
+              path="/teacher/attendance"
               element={<ViewTeacherAttendancebyTeacher />}
             />
             <Route
-              path="/getclassattendance"
+              path="/class/attendance"
               element={<GetClassAttendance />}
             />
           </Route>
           <Route element={<PrivateRouteStudent />}>
             <Route
-              path="/getstudentattendance"
+              path="/student/attendance"
               element={<ViewStudentAttendance />}
             />
           </Route>
